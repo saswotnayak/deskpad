@@ -6,6 +6,7 @@ import re
 from datetime import datetime, timedelta
 from fastapi import APIRouter, HTTPException, status
 from pydantic import BaseModel
+from app.config import settings
 
 router = APIRouter(prefix="/api/github", tags=["github"])
 
@@ -27,7 +28,7 @@ class ContributionsResponse(BaseModel):
 # In-memory cache to store parsed stats and avoid rate limiting
 # Schema: { username: { "timestamp": datetime, "data": ContributionsResponse } }
 _cache: dict[str, dict] = {}
-CACHE_DURATION = timedelta(hours=1)
+CACHE_DURATION = timedelta(minutes=settings.github_cache_minutes)
 
 def parse_contributions(username: str, html: str) -> ContributionsResponse:
     """Parse raw HTML contributions page into a structured schema."""

@@ -33,6 +33,7 @@ services:
       - ENVIRONMENT=production
       - PORT=3001
       - DB_PATH=/data/deskpad.db
+      - GITHUB_CACHE_MINUTES=${GITHUB_CACHE_MINUTES:-60}
     volumes:
       - db_data:/data
     logging:

@@ -22,6 +22,9 @@ class Settings(BaseSettings):
     # Todoist Integration
     todoist_api_token: str | None = None
 
+    # GitHub Integration
+    github_cache_minutes: int = 60
+
     model_config = {
         "env_file": ".env",
         "env_file_encoding": "utf-8",
