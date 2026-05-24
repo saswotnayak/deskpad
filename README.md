@@ -1,6 +1,6 @@
 # DeskPad 🖥️
 
-A beautiful, always-on smart desk display for repurposed Fire tablets. Dockerized for home server deployment.
+A beautiful, always-on smart desk display for repurposed Fire tablets (Any tablet). Dockerized for home server deployment.
 
 ![Phase 1: Clock + Calendar](https://img.shields.io/badge/Phase_1-Clock_%2B_Calendar-818cf8)
 ![Docker](https://img.shields.io/badge/Docker-Compose-2496ED)
