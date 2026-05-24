@@ -21,7 +21,7 @@ A beautiful, always-on smart desk display for repurposed Fire tablets (Any table
 ### Prerequisites
 
 - Docker & Docker Compose installed on your home server
-- A Fire tablet with [Fully Kiosk Browser](https://www.fully-kiosk.com/)
+- Any tablet with [Fully Kiosk Browser](https://www.fully-kiosk.com/)
 
 ### Deploy to Home Server
 
