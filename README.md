@@ -53,7 +53,7 @@ make dev
 
 ### Tablet Setup
 
-1. Install [Fully Kiosk Browser](https://www.fully-kiosk.com/) on your Fire tablet
+1. Install [Fully Kiosk Browser](https://www.fully-kiosk.com/) on your tablet
 2. Set Start URL to `http://<your-server-ip>:8080`
 3. Enable: Kiosk Mode, Keep Screen On, Immersive Mode
 4. See [docs/TABLET_SETUP.md](docs/TABLET_SETUP.md) for detailed instructions
