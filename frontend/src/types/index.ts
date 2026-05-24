@@ -36,6 +36,8 @@ export interface UserSettings {
   tickDensity: TickDensityMode;
   clockStyle: ClockStyleMode;
   calendarStyle: CalendarStyleMode;
+  todoistApiToken?: string;
+  githubUsername?: string;
 }
 
 export const DEFAULT_SETTINGS: UserSettings = {
@@ -50,4 +52,13 @@ export const DEFAULT_SETTINGS: UserSettings = {
   tickDensity: 'all',
   clockStyle: 'classic-analog',
   calendarStyle: 'month-grid',
+  todoistApiToken: '',
+  githubUsername: '',
 };
+
+export interface UserProfile {
+  id: number;
+  name: string;
+  avatarColor: string;
+}
+

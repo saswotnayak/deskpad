@@ -10,7 +10,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
 from app.db.connection import init_db, close_db
 from app.middleware.logging import LoggingMiddleware
-from app.routers import health, settings as settings_router, todos
+from app.routers import health, settings as settings_router, todos, users, auth, github
+
 
 # Configure structlog
 structlog.configure(
@@ -72,6 +73,11 @@ app.add_middleware(LoggingMiddleware)
 app.include_router(health.router)
 app.include_router(settings_router.router)
 app.include_router(todos.router)
+app.include_router(users.router)
+app.include_router(auth.router)
+app.include_router(github.router)
+
+
 
 
 if __name__ == "__main__":

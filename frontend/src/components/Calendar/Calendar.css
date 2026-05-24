@@ -479,13 +479,5 @@
   }
 }
 
-/* Avoid overlapping with the global floating settings gear on landscape viewports */
-@media (min-width: 769px) and (orientation: landscape) {
-  .month-view__header,
-  .year-view__header,
-  .weekly-agenda__header,
-  .widget-editing-header {
-    padding-right: 76px !important;
-  }
-}
+
 

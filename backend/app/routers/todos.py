@@ -4,8 +4,11 @@ import json
 import urllib.request
 import urllib.error
 import structlog
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, Depends, status
 from app.config import settings
+from app.db.connection import get_db
+from app.models.schemas import AccountInfo
+from app.routers.auth import get_current_account, verify_profile_owner
 
 logger = structlog.get_logger()
 
@@ -42,41 +45,35 @@ def make_todoist_request(url: str, token: str, method: str = "GET") -> tuple[int
         )
 
 
-@router.get("")
-def get_todos():
-    """Fetch current active tasks from Todoist, mapped to their project categories."""
-    token = settings.todoist_api_token
+async def get_user_todoist_token(user_id: int) -> str | None:
+    """Helper to look up a user's specific Todoist token, falling back to global settings."""
+    db = await get_db()
+    cursor = await db.execute(
+        "SELECT value FROM user_settings WHERE user_id = ? AND key = 'todoist_api_token'",
+        (user_id,)
+    )
+    row = await cursor.fetchone()
+    if row and row[0] and row[0].strip() != "":
+        return row[0].strip()
+    
+    # Only fall back to global settings for primary/owner profile (user_id == 1)
+    if user_id == 1:
+        return settings.todoist_api_token
+    return None
 
-    # Setup Instructions Fallback if Token is not configured
+
+@router.get("")
+async def get_todos(user_id: int = 1, current_account: AccountInfo = Depends(get_current_account)):
+    """Fetch current active tasks from Todoist, mapped to their project categories."""
+    db = await get_db()
+    await verify_profile_owner(db, user_id, current_account.id)
+    token = await get_user_todoist_token(user_id)
+
+    # Return empty list if Token is not configured
     if not token or token.strip() == "":
-        logger.warning("todoist_token_missing")
+        logger.warning("todoist_token_missing", user_id=user_id)
         return {
-            "todos": [
-                {
-                    "id": "setup-1",
-                    "title": "Create a Todoist account (or log in)",
-                    "completed": False,
-                    "category": "Setup Checklist",
-                },
-                {
-                    "id": "setup-2",
-                    "title": "Go to Settings -> Integrations -> Developer in Todoist and copy your Token",
-                    "completed": False,
-                    "category": "Setup Checklist",
-                },
-                {
-                    "id": "setup-3",
-                    "title": "Add TODOIST_API_TOKEN=your_token to backend/.env",
-                    "completed": False,
-                    "category": "Setup Checklist",
-                },
-                {
-                    "id": "setup-4",
-                    "title": "Restart DeskPad local services: make local-restart",
-                    "completed": False,
-                    "category": "Setup Checklist",
-                }
-            ]
+            "todos": []
         }
 
     # 1. Fetch Projects for Mapping IDs to Names
@@ -135,22 +132,17 @@ def get_todos():
 
 
 @router.post("/{task_id}/complete")
-def complete_todo():
-    """Mark a task as completed in Todoist."""
-    # Note: task_id is captured in path, but not used directly since we proxy the post
-    pass
-
-
-@router.post("/{task_id}/complete")
-def complete_todoist_task(task_id: str):
+async def complete_todoist_task(task_id: str, user_id: int = 1, current_account: AccountInfo = Depends(get_current_account)):
     """Close/Complete a task in Todoist."""
-    token = settings.todoist_api_token
+    db = await get_db()
+    await verify_profile_owner(db, user_id, current_account.id)
+    token = await get_user_todoist_token(user_id)
     if not token or token.strip() == "":
         # For mock/setup tasks, just return success
         if task_id.startswith("setup-"):
             return {"success": True}
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_FORWARD_URL,
+            status_code=status.HTTP_400_BAD_REQUEST,
             detail="Todoist integration is not configured"
         )
 

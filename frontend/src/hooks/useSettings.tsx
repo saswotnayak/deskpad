@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { UserSettings, DEFAULT_SETTINGS } from '../types';
+import { useUser } from './useUser';
+import { useAuth } from './useAuth';
 
 interface SettingsContextType {
   settings: UserSettings;
@@ -9,7 +11,7 @@ interface SettingsContextType {
 
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
 
-const LOCAL_STORAGE_KEY = 'deskpad_settings';
+const LOCAL_STORAGE_KEY_PREFIX = 'deskpad_settings_user_';
 
 // Helper to convert snake_case object to camelCase typed settings
 function parseDbSettings(dbSettings: Record<string, string>): Partial<UserSettings> {
@@ -41,24 +43,41 @@ function formatDbSetting(key: keyof UserSettings, value: any): Record<string, st
 }
 
 export function SettingsProvider({ children }: { children: React.ReactNode }) {
-  const [settings, setSettings] = useState<UserSettings>(() => {
-    try {
-      const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
-      if (saved) {
-        return { ...DEFAULT_SETTINGS, ...JSON.parse(saved) };
-      }
-    } catch (e) {
-      console.error('Failed to parse local storage settings', e);
-    }
-    return DEFAULT_SETTINGS;
-  });
+  const { activeUser } = useUser();
+  const { token } = useAuth();
+  const userId = activeUser?.id || 1;
+  const storageKey = `${LOCAL_STORAGE_KEY_PREFIX}${userId}`;
+
+  const [settings, setSettings] = useState<UserSettings>(DEFAULT_SETTINGS);
   const [loading, setLoading] = useState(true);
 
-  // Load from backend on mount
+  // Sync settings when the active user changes
   useEffect(() => {
-    const fetchSettings = async () => {
+    // 1. Initial check inside localStorage for the specific user
+    const saved = localStorage.getItem(storageKey);
+    if (saved) {
       try {
-        const response = await fetch('/api/settings');
+        setSettings({ ...DEFAULT_SETTINGS, ...JSON.parse(saved) });
+      } catch (e) {
+        setSettings(DEFAULT_SETTINGS);
+      }
+    } else {
+      setSettings(DEFAULT_SETTINGS);
+    }
+
+    // 2. Fetch fresh user settings from backend (only if authenticated)
+    const fetchSettings = async () => {
+      if (!token) {
+        setLoading(false);
+        return;
+      }
+      setLoading(true);
+      try {
+        const response = await fetch(`/api/settings?user_id=${userId}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
         if (!response.ok) throw new Error('API error');
         const data = await response.json();
         
@@ -66,7 +85,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
           const parsed = parseDbSettings(data.settings);
           setSettings((prev) => {
             const merged = { ...prev, ...parsed };
-            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(merged));
+            localStorage.setItem(storageKey, JSON.stringify(merged));
             return merged;
           });
         }
@@ -76,24 +95,27 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
         setLoading(false);
       }
     };
+    
     fetchSettings();
-  }, []);
+  }, [userId, storageKey, token]);
 
   const updateSetting = async <K extends keyof UserSettings>(key: K, value: UserSettings[K]) => {
     // 1. Update local state immediately (optimistic UI update)
     setSettings((prev) => {
       const updated = { ...prev, [key]: value };
-      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updated));
+      localStorage.setItem(storageKey, JSON.stringify(updated));
       return updated;
     });
 
-    // 2. Sync to backend
+    // 2. Sync to backend for this user (only if authenticated)
+    if (!token) return;
     try {
       const payload = { settings: formatDbSetting(key, value) };
-      const response = await fetch('/api/settings', {
+      const response = await fetch(`/api/settings?user_id=${userId}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(payload),
       });

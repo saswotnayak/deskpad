@@ -1,4 +1,7 @@
 import { useState, useEffect } from 'react';
+import { useUser } from '../../hooks/useUser';
+import { useAuth } from '../../hooks/useAuth';
+import { useSettings } from '../../hooks/useSettings';
 import './TodoPage.css';
 
 interface TodoItem {
@@ -9,15 +12,28 @@ interface TodoItem {
   dueDate?: string;
 }
 
-export function TodoPage() {
+interface TodoPageProps {
+  onOpenSettings: () => void;
+}
+
+export function TodoPage({ onOpenSettings }: TodoPageProps) {
+  const { activeUser } = useUser();
+  const { token } = useAuth();
+  const { settings } = useSettings();
   const [todos, setTodos] = useState<TodoItem[]>([]);
   const [completedIds, setCompletedIds] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const fetchTodos = async () => {
+    if (!token) return;
+    const userId = activeUser?.id || 1;
     try {
-      const res = await fetch('/api/todos');
+      const res = await fetch(`/api/todos?user_id=${userId}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
       if (!res.ok) {
         throw new Error('Failed to load tasks from server');
       }
@@ -56,15 +72,60 @@ export function TodoPage() {
     }
   };
 
+  // Reset local state on user switch
+  useEffect(() => {
+    setCompletedIds(new Set());
+    setTodos([]);
+  }, [activeUser?.id]);
+
   useEffect(() => {
     fetchTodos();
     // Poll for changes every 30 seconds to keep display fresh
     const interval = setInterval(fetchTodos, 30000);
     return () => clearInterval(interval);
-  }, [completedIds]);
+  }, [activeUser?.id, completedIds]);
+
+  // 1. ONBOARDING VIEW (No token set)
+  if (!settings.todoistApiToken?.trim()) {
+    const mockTasks = [
+      { id: 'mock-1', title: 'Plan weekly sprint goals', category: 'Work' },
+      { id: 'mock-2', title: 'Buy fresh groceries', category: 'Personal' },
+      { id: 'mock-3', title: 'Read 10 pages of book', category: 'Self Care' },
+    ];
+
+    return (
+      <div className="todo-page onboarding">
+        <div className="todo-onboarding-bg">
+          {mockTasks.map(t => (
+            <div key={t.id} className="mock-task-card" style={{ opacity: 0.15 }}>
+              <div className="mock-task-checkbox" />
+              <div className="mock-task-details">
+                <span className="mock-task-title">{t.title}</span>
+                <span className="mock-task-category">{t.category}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="todo-card onboarding-card fade-in">
+          <div className="todo-icon-glow">
+            <svg viewBox="0 0 24 24" width="48" height="48" stroke="currentColor" fill="none" strokeWidth="1.5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+            </svg>
+          </div>
+          <h2>Todoist Integration</h2>
+          <p>Display your daily agenda, projects, and checklist tasks right on your smart desk dashboard.</p>
+          <button className="todo-btn" onClick={onOpenSettings}>
+            Configure Token
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   const handleToggle = async (id: string) => {
     if (completedIds.has(id)) return;
+
+    const userId = activeUser?.id || 1;
 
     // 1. Mark completed locally and update todo items instantly
     setCompletedIds((prev) => {
@@ -79,7 +140,12 @@ export function TodoPage() {
 
     // 2. Commit completion back to backend
     try {
-      const res = await fetch(`/api/todos/${id}/complete`, { method: 'POST' });
+      const res = await fetch(`/api/todos/${id}/complete?user_id=${userId}`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
       if (!res.ok) {
         throw new Error('Failed to mark task completed');
       }
@@ -147,8 +213,17 @@ export function TodoPage() {
           {todos.length === 0 ? (
             <div className="todo-page__empty">
               <div className="todo-page__empty-icon">✓</div>
-              <h3>All caught up!</h3>
-              <p>Create tasks in your Todoist app and they will display here.</p>
+              {!settings.todoistApiToken ? (
+                <>
+                  <h3>Connect to Todoist</h3>
+                  <p>Go to settings (gear icon) and add your Todoist API token to sync your personal tasks.</p>
+                </>
+              ) : (
+                <>
+                  <h3>All caught up!</h3>
+                  <p>Create tasks in your Todoist app and they will display here.</p>
+                </>
+              )}
             </div>
           ) : (
             categories.map((category) => (

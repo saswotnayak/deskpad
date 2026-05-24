@@ -257,3 +257,126 @@
   font-size: var(--text-sm);
   color: var(--text-secondary);
 }
+
+/* Onboarding Screen */
+.todo-page.onboarding {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.todo-onboarding-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-8);
+  filter: blur(1.5px);
+  pointer-events: none;
+  justify-content: center;
+  align-items: center;
+}
+
+.mock-task-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  background: var(--bg-glass);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  width: 100%;
+  max-width: 380px;
+}
+
+.mock-task-checkbox {
+  width: 20px;
+  height: 20px;
+  border-radius: var(--radius-full);
+  border: 2px solid var(--text-tertiary);
+  flex-shrink: 0;
+}
+
+.mock-task-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.mock-task-title {
+  font-size: var(--text-base);
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.mock-task-category {
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+}
+
+.todo-card.onboarding-card {
+  position: relative;
+  z-index: 2;
+  max-width: 460px;
+  width: 100%;
+  padding: var(--space-8);
+  text-align: center;
+  background: rgba(10, 10, 15, 0.7);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg), var(--shadow-glow);
+}
+
+.todo-icon-glow {
+  margin: 0 auto var(--space-4) auto;
+  color: var(--accent-primary);
+  filter: drop-shadow(0 0 10px var(--accent-glow));
+}
+
+.onboarding-card h2 {
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  margin-bottom: var(--space-3);
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+}
+
+.onboarding-card p {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: var(--space-6);
+}
+
+.todo-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-3) var(--space-6);
+  background: var(--accent-primary);
+  color: var(--bg-primary);
+  border: none;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: var(--text-sm);
+  cursor: pointer;
+  box-shadow: 0 4px 12px var(--accent-primary-dim);
+  transition: all var(--transition-base);
+}
+
+.todo-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px var(--accent-glow);
+  filter: brightness(1.1);
+}
+
+.todo-btn:active {
+  transform: translateY(0);
+}
+

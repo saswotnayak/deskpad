@@ -21,7 +21,6 @@ export function Layout({ clockPanel, calendarPanel }: LayoutProps) {
         <section className="layout__calendar-panel" aria-label="Calendar">
           {calendarPanel}
         </section>
-        <div className="layout__version">DeskPad v1.0</div>
       </main>
     </div>
   );

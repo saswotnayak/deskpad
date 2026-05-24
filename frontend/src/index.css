@@ -32,6 +32,11 @@
   --color-today: #818cf8;
   --color-weekend: rgba(248, 113, 113, 0.5);
   --color-weekend-text: #fca5a5;
+  --contrib-l0: rgba(255, 255, 255, 0.04);
+  --contrib-l1: rgba(129, 140, 248, 0.15);
+  --contrib-l2: rgba(129, 140, 248, 0.35);
+  --contrib-l3: rgba(129, 140, 248, 0.60);
+  --contrib-l4: var(--accent-secondary);
 
   /* Borders */
   --border-subtle: rgba(255, 255, 255, 0.06);
@@ -125,6 +130,9 @@ body {
   transition: background-color var(--transition-slow), background-image var(--transition-slow), color var(--transition-base);
   width: 100%;
   height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 #root {
@@ -185,6 +193,11 @@ body {
   --border-medium: rgba(0, 242, 254, 0.18);
   --border-accent: rgba(0, 242, 254, 0.35);
   --theme-gradient: linear-gradient(135deg, rgba(0, 242, 254, 0.12) 0%, rgba(129, 140, 248, 0.03) 60%, #0a0a14 100%);
+  --contrib-l0: rgba(255, 255, 255, 0.04);
+  --contrib-l1: rgba(0, 242, 254, 0.15);
+  --contrib-l2: rgba(0, 242, 254, 0.35);
+  --contrib-l3: rgba(0, 242, 254, 0.65);
+  --contrib-l4: #00f2fe;
 }
 
 /* AMOLED Black */
@@ -206,6 +219,11 @@ body {
   --border-accent: rgba(255, 255, 255, 0.2);
   --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.9);
   --theme-gradient: none;
+  --contrib-l0: rgba(255, 255, 255, 0.04);
+  --contrib-l1: rgba(255, 255, 255, 0.15);
+  --contrib-l2: rgba(255, 255, 255, 0.35);
+  --contrib-l3: rgba(255, 255, 255, 0.65);
+  --contrib-l4: #ffffff;
 }
 
 /* Cyberpunk Neon */
@@ -228,6 +246,11 @@ body {
   --border-medium: rgba(255, 0, 127, 0.2);
   --border-accent: rgba(255, 0, 127, 0.4);
   --theme-gradient: linear-gradient(135deg, rgba(255, 0, 127, 0.14) 0%, rgba(0, 240, 255, 0.04) 60%, #05030b 100%);
+  --contrib-l0: rgba(255, 255, 255, 0.04);
+  --contrib-l1: rgba(255, 0, 127, 0.15);
+  --contrib-l2: rgba(255, 0, 127, 0.35);
+  --contrib-l3: rgba(255, 0, 127, 0.65);
+  --contrib-l4: #ff007f;
 }
 
 /* Aurora Borealis (Upgrade from Forest) */
@@ -248,6 +271,11 @@ body {
   --border-medium: rgba(0, 255, 204, 0.18);
   --border-accent: rgba(0, 255, 204, 0.35);
   --theme-gradient: linear-gradient(135deg, rgba(0, 255, 204, 0.12) 0%, rgba(177, 47, 200, 0.05) 60%, #040813 100%);
+  --contrib-l0: rgba(255, 255, 255, 0.04);
+  --contrib-l1: rgba(0, 255, 204, 0.15);
+  --contrib-l2: rgba(0, 255, 204, 0.35);
+  --contrib-l3: rgba(0, 255, 204, 0.65);
+  --contrib-l4: #00ffcc;
 }
 
 /* Sunset Glow (Upgrade from Amber) */
@@ -268,4 +296,9 @@ body {
   --border-medium: rgba(255, 94, 98, 0.18);
   --border-accent: rgba(255, 94, 98, 0.35);
   --theme-gradient: linear-gradient(180deg, rgba(255, 94, 98, 0.14) 0%, rgba(255, 153, 102, 0.04) 50%, #0a0314 100%);
+  --contrib-l0: rgba(255, 255, 255, 0.04);
+  --contrib-l1: rgba(255, 94, 98, 0.15);
+  --contrib-l2: rgba(255, 94, 98, 0.35);
+  --contrib-l3: rgba(255, 94, 98, 0.65);
+  --contrib-l4: #ff5e62;
 }
