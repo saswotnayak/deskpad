@@ -1,0 +1,26 @@
+/* ============================================
+   Date Display Component
+   ============================================ */
+
+.date-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-3) var(--space-6);
+}
+
+.date-display__day-name {
+  font-size: var(--text-lg);
+  font-weight: 500;
+  color: var(--accent-primary);
+  text-transform: uppercase;
+  letter-spacing: 3px;
+}
+
+.date-display__full-date {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  font-weight: 400;
+  letter-spacing: 0.5px;
+}

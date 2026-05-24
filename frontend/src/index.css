@@ -1,0 +1,271 @@
+/* ============================================
+   DeskPad Design System
+   ============================================
+   Dark theme optimized for always-on tablet display.
+   AMOLED-friendly deep blacks, muted accents to reduce eye strain.
+   ============================================ */
+
+/* --- CSS Custom Properties (Design Tokens) --- */
+:root {
+  /* Background layers */
+  --bg-primary: #0a0a0f;
+  --bg-secondary: #12121a;
+  --bg-tertiary: #1a1a26;
+  --bg-elevated: #222233;
+  --bg-glass: rgba(255, 255, 255, 0.03);
+  --bg-glass-hover: rgba(255, 255, 255, 0.06);
+
+  /* Text */
+  --text-primary: #e8e8f0;
+  --text-secondary: rgba(232, 232, 240, 0.6);
+  --text-tertiary: rgba(232, 232, 240, 0.35);
+  --text-accent: #818cf8;
+
+  /* Accent palette — Midnight Ocean default */
+  --accent-primary: #00f2fe;
+  --accent-primary-dim: rgba(0, 242, 254, 0.15);
+  --accent-secondary: #818cf8;
+  --accent-glow: rgba(0, 242, 254, 0.25);
+  --theme-gradient: linear-gradient(135deg, rgba(0, 242, 254, 0.08) 0%, rgba(129, 140, 248, 0.02) 60%, #0a0a0f 100%);
+
+  /* Semantic colors */
+  --color-today: #818cf8;
+  --color-weekend: rgba(248, 113, 113, 0.5);
+  --color-weekend-text: #fca5a5;
+
+  /* Borders */
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  --border-medium: rgba(255, 255, 255, 0.1);
+  --border-accent: rgba(129, 140, 248, 0.3);
+
+  /* Spacing scale (4px base) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* Typography */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.875rem;
+  --text-4xl: 2.25rem;
+  --text-5xl: 3rem;
+  --text-6xl: 3.75rem;
+  --text-7xl: 4.5rem;
+  --text-8xl: 6rem;
+
+  /* Radius */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
+  --shadow-glow: 0 0 40px var(--accent-glow);
+
+  /* Transitions */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 400ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-spring: 500ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* --- Reset & Base --- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: #000000;
+  color: var(--text-primary);
+  line-height: 1.5;
+  overflow: hidden;
+  width: 100vw;
+  height: 100vh;
+  /* Prevent pull-to-refresh and overscroll on tablet */
+  overscroll-behavior: none;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.app-theme-wrapper {
+  background-color: var(--bg-primary);
+  background-image: var(--theme-gradient);
+  transition: background-color var(--transition-slow), background-image var(--transition-slow), color var(--transition-base);
+  width: 100%;
+  height: 100%;
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+}
+
+/* --- Utility: Animated background shimmer --- */
+@keyframes subtleShimmer {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.6; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInScale {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* --- Scrollbar (if any overflow) --- */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-medium);
+  border-radius: var(--radius-full);
+}
+
+/* --- Color Themes --- */
+
+/* Midnight Ocean (Default - deep-space) */
+.theme-deep-space {
+  --bg-primary: #0a0a14;
+  --bg-secondary: #121222;
+  --bg-tertiary: #1a1a30;
+  --bg-elevated: #222240;
+  --bg-glass: rgba(255, 255, 255, 0.03);
+  --bg-glass-hover: rgba(255, 255, 255, 0.06);
+  --text-accent: #00f2fe;
+  --accent-primary: #00f2fe;
+  --accent-primary-dim: rgba(0, 242, 254, 0.15);
+  --accent-secondary: #818cf8;
+  --accent-glow: rgba(0, 242, 254, 0.35);
+  --color-today: #00f2fe;
+  --border-subtle: rgba(0, 242, 254, 0.08);
+  --border-medium: rgba(0, 242, 254, 0.18);
+  --border-accent: rgba(0, 242, 254, 0.35);
+  --theme-gradient: linear-gradient(135deg, rgba(0, 242, 254, 0.12) 0%, rgba(129, 140, 248, 0.03) 60%, #0a0a14 100%);
+}
+
+/* AMOLED Black */
+.theme-amoled-black {
+  --bg-primary: #000000;
+  --bg-secondary: #09090c;
+  --bg-tertiary: #121217;
+  --bg-elevated: #1a1a22;
+  --bg-glass: rgba(255, 255, 255, 0.02);
+  --bg-glass-hover: rgba(255, 255, 255, 0.05);
+  --text-accent: #f3f4f6;
+  --accent-primary: #f3f4f6;
+  --accent-primary-dim: rgba(243, 244, 246, 0.15);
+  --accent-secondary: #9ca3af;
+  --accent-glow: rgba(255, 255, 255, 0.04);
+  --color-today: #ffffff;
+  --border-subtle: rgba(255, 255, 255, 0.05);
+  --border-medium: rgba(255, 255, 255, 0.1);
+  --border-accent: rgba(255, 255, 255, 0.2);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.9);
+  --theme-gradient: none;
+}
+
+/* Cyberpunk Neon */
+.theme-cyberpunk {
+  --bg-primary: #05030b;
+  --bg-secondary: #0d071a;
+  --bg-tertiary: #170c2e;
+  --bg-elevated: #231245;
+  --bg-glass: rgba(255, 0, 127, 0.03);
+  --bg-glass-hover: rgba(255, 0, 127, 0.06);
+  --text-accent: #00f0ff;
+  --accent-primary: #ff007f;
+  --accent-primary-dim: rgba(255, 0, 127, 0.15);
+  --accent-secondary: #00f0ff;
+  --accent-glow: rgba(255, 0, 127, 0.4);
+  --color-today: #ff007f;
+  --color-weekend: rgba(0, 240, 255, 0.4);
+  --color-weekend-text: #a5f3fc;
+  --border-subtle: rgba(255, 0, 127, 0.1);
+  --border-medium: rgba(255, 0, 127, 0.2);
+  --border-accent: rgba(255, 0, 127, 0.4);
+  --theme-gradient: linear-gradient(135deg, rgba(255, 0, 127, 0.14) 0%, rgba(0, 240, 255, 0.04) 60%, #05030b 100%);
+}
+
+/* Aurora Borealis (Upgrade from Forest) */
+.theme-forest-canopy {
+  --bg-primary: #040813;
+  --bg-secondary: #0a1124;
+  --bg-tertiary: #131c36;
+  --bg-elevated: #1d2b4a;
+  --bg-glass: rgba(0, 255, 204, 0.03);
+  --bg-glass-hover: rgba(0, 255, 204, 0.06);
+  --text-accent: #00ffcc;
+  --accent-primary: #00ffcc;
+  --accent-primary-dim: rgba(0, 255, 204, 0.15);
+  --accent-secondary: #b12fc8;
+  --accent-glow: rgba(0, 255, 204, 0.35);
+  --color-today: #00ffcc;
+  --border-subtle: rgba(0, 255, 204, 0.08);
+  --border-medium: rgba(0, 255, 204, 0.18);
+  --border-accent: rgba(0, 255, 204, 0.35);
+  --theme-gradient: linear-gradient(135deg, rgba(0, 255, 204, 0.12) 0%, rgba(177, 47, 200, 0.05) 60%, #040813 100%);
+}
+
+/* Sunset Glow (Upgrade from Amber) */
+.theme-warm-amber {
+  --bg-primary: #0a0314;
+  --bg-secondary: #140727;
+  --bg-tertiary: #200b3e;
+  --bg-elevated: #2d1056;
+  --bg-glass: rgba(255, 94, 98, 0.03);
+  --bg-glass-hover: rgba(255, 94, 98, 0.06);
+  --text-accent: #ff9966;
+  --accent-primary: #ff5e62;
+  --accent-primary-dim: rgba(255, 94, 98, 0.15);
+  --accent-secondary: #ff9966;
+  --accent-glow: rgba(255, 94, 98, 0.35);
+  --color-today: #ff5e62;
+  --border-subtle: rgba(255, 94, 98, 0.08);
+  --border-medium: rgba(255, 94, 98, 0.18);
+  --border-accent: rgba(255, 94, 98, 0.35);
+  --theme-gradient: linear-gradient(180deg, rgba(255, 94, 98, 0.14) 0%, rgba(255, 153, 102, 0.04) 50%, #0a0314 100%);
+}

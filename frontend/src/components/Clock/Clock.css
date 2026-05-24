@@ -1,0 +1,591 @@
+/* ============================================
+   Clock Components — Analog & Digital
+   ============================================ */
+
+/* --- Shared Container --- */
+.clock-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-6);
+  padding: var(--space-8);
+  cursor: pointer;
+  animation: fadeInScale 600ms ease-out;
+  position: relative;
+  min-height: 0;
+}
+
+.clock-container::after {
+  content: '';
+  position: absolute;
+  bottom: var(--space-4);
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+  opacity: 0;
+  transition: opacity var(--transition-base);
+  pointer-events: none;
+}
+
+.clock-container:active::after {
+  opacity: 1;
+}
+
+/* --- View transition --- */
+.clock-view-enter {
+  animation: fadeInScale 400ms ease-out;
+}
+
+/* --- Analog Clock --- */
+.analog-clock {
+  position: relative;
+  width: min(280px, 38vh);
+  height: min(280px, 38vh);
+  border-radius: 50%;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  box-shadow:
+    var(--shadow-lg),
+    inset 0 0 60px rgba(0, 0, 0, 0.3);
+}
+
+/* Clock face ticks */
+.analog-clock__ticks {
+  position: absolute;
+  inset: 0;
+}
+
+.analog-clock__tick {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 1.5px;
+  height: 100%;
+  transform-origin: center center;
+}
+
+.analog-clock__tick::before {
+  content: '';
+  display: block;
+  width: 1.5px;
+  height: 10px;
+  margin: 6px auto 0;
+  background: var(--text-tertiary);
+  border-radius: 1px;
+  transition: background var(--transition-fast);
+}
+
+.analog-clock__tick--major::before {
+  height: 16px;
+  width: 2px;
+  background: var(--text-secondary);
+  margin-top: 8px;
+}
+
+/* Clock hands */
+.analog-clock__hand {
+  position: absolute;
+  bottom: 50%;
+  left: 50%;
+  transform-origin: bottom center;
+  border-radius: 2px;
+  will-change: transform;
+}
+
+.analog-clock__hand--hour {
+  width: 3.5px;
+  height: 28%;
+  margin-left: -1.75px;
+  background: var(--text-primary);
+  border-radius: 3px;
+  transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 3;
+}
+
+.analog-clock__hand--minute {
+  width: 2.5px;
+  height: 36%;
+  margin-left: -1.25px;
+  background: var(--text-primary);
+  border-radius: 2px;
+  transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 2;
+}
+
+.analog-clock__hand--second {
+  width: 1px;
+  height: 40%;
+  margin-left: -0.5px;
+  background: var(--accent-primary);
+  z-index: 4;
+  /* Smooth sweep instead of ticking */
+  transition: transform 200ms linear;
+}
+
+/* Counter-balance for second hand */
+.analog-clock__hand--second::after {
+  content: '';
+  position: absolute;
+  bottom: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 3px;
+  height: 12px;
+  background: var(--accent-primary);
+  border-radius: 2px;
+}
+
+/* Center dot */
+.analog-clock__center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  border-radius: 50%;
+  background: var(--accent-primary);
+  z-index: 5;
+  box-shadow: 0 0 12px var(--accent-glow);
+}
+
+/* Subtle glow ring around clock */
+.analog-clock__glow {
+  position: absolute;
+  inset: -2px;
+  border-radius: 50%;
+  border: 1px solid var(--border-accent);
+  opacity: 0.4;
+}
+
+/* Numbers layer */
+.analog-clock__numbers {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.analog-clock__number {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--text-tertiary);
+  user-select: none;
+}
+
+.analog-clock__number--accent {
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+/* --- Digital Clock --- */
+.digital-clock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.digital-clock__time {
+  font-family: var(--font-mono);
+  font-size: var(--text-8xl);
+  font-weight: 300;
+  letter-spacing: -2px;
+  line-height: 1;
+  color: var(--text-primary);
+  display: flex;
+  align-items: baseline;
+}
+
+.digital-clock__colon {
+  animation: pulse 2s ease-in-out infinite;
+  margin: 0 2px;
+  position: relative;
+  top: -4px;
+}
+
+.digital-clock__seconds {
+  font-size: var(--text-3xl);
+  font-weight: 300;
+  color: var(--text-secondary);
+  margin-left: var(--space-2);
+}
+
+.digital-clock__ampm {
+  font-family: var(--font-sans);
+  font-size: var(--text-xl);
+  font-weight: 500;
+  color: var(--accent-primary);
+  margin-left: var(--space-3);
+  letter-spacing: 2px;
+}
+
+.digital-clock__date {
+  font-size: var(--text-lg);
+  color: var(--text-secondary);
+  font-weight: 400;
+  letter-spacing: 0.5px;
+}
+
+/* --- Long press hint --- */
+.clock-hint {
+  position: absolute;
+  bottom: var(--space-3);
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+  opacity: 0;
+  transition: opacity var(--transition-slow);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.clock-container:hover .clock-hint {
+  opacity: 0.6;
+}
+
+/* --- Responsive --- */
+@media (max-height: 640px) {
+  .analog-clock {
+    width: min(220px, 34vh);
+    height: min(220px, 34vh);
+  }
+
+  .digital-clock__time {
+    font-size: var(--text-7xl);
+  }
+}
+
+@media (max-width: 768px) {
+  .clock-container {
+    padding: var(--space-4);
+  }
+
+  .digital-clock__time {
+    font-size: var(--text-6xl);
+  }
+}
+
+/* ============================================
+   Widget Carousel & Custom Watch Faces
+   ============================================ */
+
+/* --- Interactive Edit Mode Wrapper --- */
+.widget-container--editing {
+  transform: scale(0.93) translate3d(0, 0, 0);
+  border: 1px dashed var(--border-accent);
+  box-shadow: var(--shadow-glow);
+  background: var(--bg-glass);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6) !important;
+  transition: all var(--transition-spring);
+  position: relative;
+}
+
+.widget-editing-header {
+  position: absolute;
+  top: var(--space-3);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  text-align: center;
+  pointer-events: none;
+  z-index: 10;
+  width: 100%;
+}
+
+.widget-editing-header__title {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--text-accent);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.widget-editing-header__subtitle {
+  font-size: 9px;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* --- Carousel Slide Structure --- */
+.carousel-view {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.carousel-track {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  transition: transform var(--transition-base) cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+.carousel-slide {
+  flex: 0 0 100%;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  outline: none;
+  overflow: hidden;
+}
+
+/* --- Carousel Arrow Buttons --- */
+.carousel-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  background: var(--bg-glass);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 20;
+  transition: all var(--transition-fast);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.carousel-arrow:hover {
+  background: var(--bg-glass-hover);
+  color: var(--text-primary);
+  border-color: var(--border-medium);
+  box-shadow: var(--shadow-sm);
+}
+
+.carousel-arrow--left {
+  left: var(--space-2);
+}
+
+.carousel-arrow--right {
+  right: var(--space-2);
+}
+
+.carousel-arrow svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* --- Carousel Pagination Dots --- */
+.carousel-dots {
+  position: absolute;
+  bottom: var(--space-4);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: var(--space-2);
+  z-index: 20;
+  pointer-events: auto;
+}
+
+.carousel-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: var(--text-tertiary);
+  border: none;
+  cursor: pointer;
+  opacity: 0.3;
+  padding: 0;
+  transition: all var(--transition-base);
+}
+
+.carousel-dot--active {
+  background: var(--accent-primary);
+  opacity: 1;
+  width: 16px;
+  box-shadow: 0 0 8px var(--accent-glow);
+}
+
+/* --- Stacked Digital Watch Face --- */
+.stacked-clock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.stacked-clock__hours {
+  font-family: var(--font-sans);
+  font-size: min(7.5rem, 15vh);
+  font-weight: 850;
+  line-height: 0.85;
+  color: var(--accent-primary);
+  letter-spacing: -3px;
+  text-shadow: 0 0 40px var(--accent-glow);
+}
+
+.stacked-clock__minutes {
+  font-family: var(--font-sans);
+  font-size: min(7.5rem, 15vh);
+  font-weight: 850;
+  line-height: 0.85;
+  color: var(--text-primary);
+  letter-spacing: -3px;
+}
+
+.stacked-clock__ampm {
+  position: absolute;
+  bottom: -20px;
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+/* --- Retro Digital Watch Face --- */
+.retro-clock {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-6) var(--space-8);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-medium);
+  background: #040406;
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.9);
+}
+
+/* Matrix background grid lines */
+.retro-clock__grid-bg {
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(0deg, transparent 24%, rgba(255, 255, 255, 0.015) 25%, rgba(255, 255, 255, 0.015) 26%, transparent 27%, transparent 74%, rgba(255, 255, 255, 0.015) 75%, rgba(255, 255, 255, 0.015) 76%, transparent 77%),
+                    linear-gradient(90deg, transparent 24%, rgba(255, 255, 255, 0.015) 25%, rgba(255, 255, 255, 0.015) 26%, transparent 27%, transparent 74%, rgba(255, 255, 255, 0.015) 75%, rgba(255, 255, 255, 0.015) 76%, transparent 77%);
+  background-size: 8px 8px;
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.retro-clock__time {
+  display: flex;
+  align-items: baseline;
+  font-family: var(--font-mono);
+  font-size: min(4.5rem, 9vh);
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--accent-primary);
+  text-shadow: 0 0 10px var(--accent-glow), 0 0 20px var(--accent-glow);
+}
+
+.retro-clock__colon {
+  margin: 0 4px;
+  animation: pulse 1s step-end infinite;
+  opacity: 0.8;
+}
+
+.retro-clock__ampm {
+  font-size: var(--text-base);
+  color: var(--text-secondary);
+  margin-left: var(--space-3);
+  font-weight: 600;
+}
+
+/* --- Chronograph Watch Face Subdials --- */
+.chrono-subdial {
+  position: absolute;
+  width: 66px;
+  height: 66px;
+  border-radius: 50%;
+  border: 1px dashed var(--border-subtle);
+  background: rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.chrono-subdial--top {
+  top: 22%;
+}
+
+.chrono-subdial--bottom {
+  bottom: 22%;
+}
+
+.chrono-subdial__ring {
+  position: absolute;
+  inset: 2px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.chrono-subdial__ticks {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, var(--border-subtle) 1px, transparent 1px);
+  background-size: 8px 8px;
+  opacity: 0.15;
+  border-radius: 50%;
+}
+
+.chrono-subdial__labels {
+  position: absolute;
+  inset: 4px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 8px;
+  font-family: var(--font-mono);
+  color: var(--text-tertiary);
+  font-weight: 500;
+  line-height: 1;
+}
+
+.chrono-subdial__hand {
+  position: absolute;
+  width: 2px;
+  height: 28px;
+  bottom: 50%;
+  left: calc(50% - 1px);
+  background: var(--text-accent);
+  transform-origin: bottom center;
+  border-radius: var(--radius-full);
+}
+
+.chrono-subdial__center {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--accent-primary);
+  box-shadow: 0 0 4px var(--accent-glow);
+}
+
+/* Adjustments for Chronograph numbers */
+.analog-clock__number--chrono {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.analog-clock__tick--sub {
+  height: 4px;
+  opacity: 0.25;
+}
+

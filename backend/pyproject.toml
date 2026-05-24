@@ -1,0 +1,20 @@
+[project]
+name = "deskpad-backend"
+version = "1.0.0"
+description = "DeskPad — Smart desk display backend API"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.34.0",
+    "aiosqlite>=0.21.0",
+    "pydantic-settings>=2.7.0",
+    "structlog>=25.1.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.25.0",
+    "httpx>=0.28.0",
+]

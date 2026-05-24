@@ -1,0 +1,44 @@
+# IDE / OS files
+.DS_Store
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+
+# Node / Vite / TS
+node_modules/
+dist/
+out-tsc/
+*.tsbuildinfo
+.eslintcache
+.parcel-cache
+.cache
+
+# Backend Caches & Environments
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+ENV/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.ipynb_checkpoints/
+
+# Runtime / Logs / PIDs
+*.pid
+*.log
+.env
+.env.*
+!.env.example
+
+# Databases
+*.db
+*.sqlite
+*.sqlite3
+data/
